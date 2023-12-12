@@ -2105,6 +2105,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9e9d979b3ce68192e42760c7810125eb6cf2ea10efae545a156063e61f314e2a"
 
 [[package]]
+name = "rustls-postquantum"
+version = "0.1.0"
+dependencies = [
+ "rustls 0.23.0-alpha.0",
+]
+
+[[package]]
 name = "rustls-provider-example"
 version = "0.0.1"
 dependencies = [
