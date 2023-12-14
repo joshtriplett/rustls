@@ -6,3 +6,7 @@ edition = "2021"
 [dependencies]
 rustls = { path = "../rustls", features = [ "aws_lc_rs" ]}
 aws-lc-rs = { version = "1.6", features = [ "unstable" ]}
+
+[dev-dependencies]
+env_logger = "0.10"
+webpki-roots = "0.26"
