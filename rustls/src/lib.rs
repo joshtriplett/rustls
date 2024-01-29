@@ -203,6 +203,7 @@
 //! # use rustls;
 //! # use webpki;
 //! # use std::sync::Arc;
+//! # rustls::crypto::CryptoProvider::install_as_process_default(rustls::crypto::ring::default_provider());
 //! # let root_store = rustls::RootCertStore::from_iter(
 //! #  webpki_roots::TLS_SERVER_ROOTS
 //! #      .iter()

@@ -12,12 +12,9 @@ use crate::msgs::message::Message;
 use crate::suites::ExtractedSecrets;
 use crate::vecbuf::ChunkVecBuffer;
 use crate::verify;
-#[cfg(feature = "ring")]
 use crate::versions;
 use crate::KeyLog;
-#[cfg(feature = "ring")]
-use crate::WantsVerifier;
-use crate::{sign, WantsVersions};
+use crate::{sign, WantsVerifier, WantsVersions};
 
 use super::hs;
 
@@ -356,32 +353,37 @@ impl Clone for ServerConfig {
 }
 
 impl ServerConfig {
-    /// Create a builder for a server configuration with the default
-    /// [`CryptoProvider`]: [`crypto::ring::default_provider`] and safe ciphersuite and protocol
-    /// defaults.
+    /// Create a builder for a server configuration with the process-default
+    /// [`CryptoProvider`]: [`CryptoProvider::process_default`] and safe
+    /// protocol version defaults.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "ring")]
     pub fn builder() -> ConfigBuilder<Self, WantsVerifier> {
-        // Safety: we know the *ring* provider's ciphersuites are compatible with the safe default protocol versions.
-        Self::builder_with_provider(crate::crypto::ring::default_provider().into())
-            .with_safe_default_protocol_versions()
-            .unwrap()
+        Self::builder_with_protocol_versions(versions::DEFAULT_VERSIONS)
     }
 
-    /// Create a builder for a server configuration with the default
-    /// [`CryptoProvider`]: [`crypto::ring::default_provider`], safe ciphersuite defaults and
+    /// Create a builder for a server configuration with the process-default
+    /// [`CryptoProvider`]: [`CryptoProvider::process_default`] and
     /// the provided protocol versions.
     ///
     /// Panics if provided an empty slice of supported versions.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "ring")]
     pub fn builder_with_protocol_versions(
         versions: &[&'static versions::SupportedProtocolVersion],
     ) -> ConfigBuilder<Self, WantsVerifier> {
-        // Safety: we know the *ring* provider's ciphersuites are compatible with all protocol version choices.
-        Self::builder_with_provider(crate::crypto::ring::default_provider().into())
+        let provider = match CryptoProvider::process_default() {
+            None => {
+                CryptoProvider::install_process_default_from_crate_features();
+                CryptoProvider::process_default()
+            }
+            Some(provider) => Some(provider),
+        };
+
+        // Safety assumptions:
+        // 1. that the provider has been installed (explicitly or implicitly)
+        // 2. that the process-level default provider is usable with the supplied protocol versions.
+        Self::builder_with_provider(provider.expect("no process-level `CryptoProvider` available. call `CryptoProvider::install_as_process_default()` before this point"))
             .with_protocol_versions(versions)
             .unwrap()
     }

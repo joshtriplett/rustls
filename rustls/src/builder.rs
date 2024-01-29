@@ -28,6 +28,7 @@ use crate::{ClientConfig, ServerConfig};
 ///
 /// ```
 /// # #[cfg(feature = "ring")] {
+/// # rustls::crypto::CryptoProvider::install_as_process_default(rustls::crypto::ring::default_provider());
 /// use rustls::{ClientConfig, ServerConfig};
 /// ClientConfig::builder()
 /// //  ...
@@ -43,6 +44,7 @@ use crate::{ClientConfig, ServerConfig};
 ///
 /// ```no_run
 /// # #[cfg(feature = "ring")] {
+/// # rustls::crypto::CryptoProvider::install_as_process_default(rustls::crypto::ring::default_provider());
 /// # use rustls::ServerConfig;
 /// ServerConfig::builder_with_protocol_versions(&[&rustls::version::TLS13])
 /// //  ...
@@ -78,6 +80,7 @@ use crate::{ClientConfig, ServerConfig};
 ///
 /// ```
 /// # #[cfg(feature = "ring")] {
+/// # rustls::crypto::CryptoProvider::install_as_process_default(rustls::crypto::ring::default_provider());
 /// # use rustls::ClientConfig;
 /// # let root_certs = rustls::RootCertStore::empty();
 /// ClientConfig::builder()
@@ -101,6 +104,7 @@ use crate::{ClientConfig, ServerConfig};
 ///
 /// ```no_run
 /// # #[cfg(feature = "ring")] {
+/// # rustls::crypto::CryptoProvider::install_as_process_default(rustls::crypto::ring::default_provider());
 /// # use rustls::ServerConfig;
 /// # let certs = vec![];
 /// # let private_key = pki_types::PrivateKeyDer::from(

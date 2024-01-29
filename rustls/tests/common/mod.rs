@@ -344,12 +344,12 @@ impl KeyType {
 pub fn server_config_builder() -> rustls::ConfigBuilder<ServerConfig, rustls::WantsVerifier> {
     // ensure `ServerConfig::builder()` is covered, even though it is
     // equivalent to `builder_with_provider(provider::provider().into())`.
-    #[cfg(feature = "ring")]
-    {
+    if cfg!(any(
+        all(feature = "ring", not(feature = "aws_lc_rs")),
+        all(feature = "aws_lc_rs", not(feature = "ring"))
+    )) {
         rustls::ServerConfig::builder()
-    }
-    #[cfg(not(feature = "ring"))]
-    {
+    } else {
         rustls::ServerConfig::builder_with_provider(provider::default_provider().into())
             .with_safe_default_protocol_versions()
             .unwrap()
@@ -359,12 +359,12 @@ pub fn server_config_builder() -> rustls::ConfigBuilder<ServerConfig, rustls::Wa
 pub fn server_config_builder_with_versions(
     versions: &[&'static rustls::SupportedProtocolVersion],
 ) -> rustls::ConfigBuilder<ServerConfig, rustls::WantsVerifier> {
-    #[cfg(feature = "ring")]
-    {
+    if cfg!(any(
+        all(feature = "ring", not(feature = "aws_lc_rs")),
+        all(feature = "aws_lc_rs", not(feature = "ring"))
+    )) {
         rustls::ServerConfig::builder_with_protocol_versions(versions)
-    }
-    #[cfg(not(feature = "ring"))]
-    {
+    } else {
         rustls::ServerConfig::builder_with_provider(provider::default_provider().into())
             .with_protocol_versions(versions)
             .unwrap()
@@ -374,13 +374,12 @@ pub fn server_config_builder_with_versions(
 pub fn client_config_builder() -> rustls::ConfigBuilder<ClientConfig, rustls::WantsVerifier> {
     // ensure `ClientConfig::builder()` is covered, even though it is
     // equivalent to `builder_with_provider(provider::provider().into())`.
-    #[cfg(feature = "ring")]
-    {
+    if cfg!(any(
+        all(feature = "ring", not(feature = "aws_lc_rs")),
+        all(feature = "aws_lc_rs", not(feature = "ring"))
+    )) {
         rustls::ClientConfig::builder()
-    }
-
-    #[cfg(not(feature = "ring"))]
-    {
+    } else {
         rustls::ClientConfig::builder_with_provider(provider::default_provider().into())
             .with_safe_default_protocol_versions()
             .unwrap()
@@ -390,12 +389,12 @@ pub fn client_config_builder() -> rustls::ConfigBuilder<ClientConfig, rustls::Wa
 pub fn client_config_builder_with_versions(
     versions: &[&'static rustls::SupportedProtocolVersion],
 ) -> rustls::ConfigBuilder<ClientConfig, rustls::WantsVerifier> {
-    #[cfg(feature = "ring")]
-    {
+    if cfg!(any(
+        all(feature = "ring", not(feature = "aws_lc_rs")),
+        all(feature = "aws_lc_rs", not(feature = "ring"))
+    )) {
         rustls::ClientConfig::builder_with_protocol_versions(versions)
-    }
-    #[cfg(not(feature = "ring"))]
-    {
+    } else {
         rustls::ClientConfig::builder_with_provider(provider::default_provider().into())
             .with_protocol_versions(versions)
             .unwrap()
